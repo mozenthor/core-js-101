@@ -395,8 +395,15 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const paths = pathes.map((item) => item.split('/'));
+  const result = [];
+  for (let i = 0; i < paths[0].length; i += 1) {
+    if (paths.every((path) => path[i] === paths[0][i])) {
+      result.push(paths[0][i]);
+    } else return result.length ? `${result.join('/')}/` : '';
+  }
+  return '';
 }
 
 
@@ -418,8 +425,14 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = Array(m2[0].length).fill('').map(() => Array(m1.length).fill(''));
+  for (let i = 0; i < m1.length; i += 1) {
+    for (let k = 0; k < m2[0].length; k += 1) {
+      result[i][k] = m1[i].reduce((acc, el, index) => acc + el * m2[index][k], 0);
+    }
+  }
+  return result;
 }
 
 
@@ -453,8 +466,35 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const diagonals = [new Set(), new Set()];
+  for (let i = 0; i < 3; i += 1) {
+    const row = new Set(position[i]);
+    if (position[i].length === 3
+      && [...row.values()].length === 1
+      && [...row.values()][0]) {
+      return [...row.values()][0];
+    }
+    const column = new Set();
+    for (let k = 0; k < 3; k += 1) {
+      column.add(position[k][i]);
+    }
+
+    if ([...column.values()].length === 1) {
+      return [...column.values()][0];
+    }
+
+    diagonals[0].add(position[i][i]);
+    diagonals[1].add(position[3 - i - 1][i]);
+  }
+
+  for (let i = 0; i < 2; i += 1) {
+    if ([...diagonals[i].values()].length === 1) {
+      return [...diagonals[i].values()][0];
+    }
+  }
+
+  return undefined;
 }
 
 
