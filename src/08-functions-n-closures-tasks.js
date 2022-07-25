@@ -62,8 +62,14 @@ function getPowerFunction(exponent) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  return (x) => {
+    let sum = 0;
+    args.forEach((el, index) => {
+      sum += el * (x ** (args.length - 1 - index));
+    });
+    return sum;
+  };
 }
 
 
@@ -81,8 +87,9 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  this.memory = this.memory ? this.memory : func();
+  return () => this.memory;
 }
 
 
@@ -101,8 +108,18 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return () => {
+    let counter = attempts;
+    while (counter > 1) {
+      try {
+        return func();
+      } catch (error) {
+        counter -= 1;
+      }
+    }
+    return func();
+  };
 }
 
 
@@ -129,8 +146,14 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const argsString = JSON.stringify(args);
+    logFunc(`${func.name}(${argsString.slice(1, -1)}) starts`);
+    const res = func(...args);
+    logFunc(`${func.name}(${argsString.slice(1, -1)}) ends`);
+    return res;
+  };
 }
 
 
@@ -147,8 +170,8 @@ function logger(/* func, logFunc */) {
  *   partialUsingArguments(fn, 'a','b','c')('d') => 'abcd'
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
-function partialUsingArguments(/* fn, ...args1 */) {
-  throw new Error('Not implemented');
+function partialUsingArguments(fn, ...args1) {
+  return (...args2) => fn(...args1, ...args2);
 }
 
 
@@ -169,8 +192,12 @@ function partialUsingArguments(/* fn, ...args1 */) {
  *   getId4() => 7
  *   getId10() => 11
  */
-function getIdGeneratorFunction(/* startFrom */) {
-  throw new Error('Not implemented');
+function getIdGeneratorFunction(startFrom) {
+  let count = startFrom - 1;
+  return () => {
+    count += 1;
+    return count;
+  };
 }
 
 
